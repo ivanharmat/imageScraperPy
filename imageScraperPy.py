@@ -48,9 +48,11 @@ def getAllImagesUrls(bsObj) :
 
 def downloadImagesAndZip(url, imagesUrl) :
 	url = url.rstrip('/') # remove backslash from url
+	domainName = "{0.netloc}".format(urlsplit(url))
+	domainNameWithProtocol = "{0.scheme}://{0.netloc}".format(urlsplit(url))
 
 	zipFileSavedToFolder = os.path.dirname(os.path.realpath(__file__))
-	domainName = "{0.netloc}".format(urlsplit(url))
+	
 	zipFileName = domainName+".zip"
 	zf = zipfile.ZipFile(zipFileName, mode='w')
 
@@ -59,10 +61,10 @@ def downloadImagesAndZip(url, imagesUrl) :
 			downloadableUrl = "https:" + downloadableUrl
 		else :
 			if downloadableUrl.startswith("/") :
-				downloadableUrl = url + downloadableUrl
+				downloadableUrl = domainNameWithProtocol + downloadableUrl
 
 			if not downloadableUrl.startswith("http") : # still not valid url
-				downloadableUrl = url + "/" + downloadableUrl
+				downloadableUrl = domainNameWithProtocol + "/" + downloadableUrl
 		try :
 			imageExists = requests.head(downloadableUrl)
 			if imageExists.status_code == 200 :
